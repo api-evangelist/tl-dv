@@ -1,0 +1,41 @@
+openapi: 3.0.3
+info:
+  title: tl;dv Meetings System API
+  version: v1alpha1
+  description: 'Public API for tl;dv, the AI meeting notetaker for Zoom, Google Meet and Microsoft Teams. Programmatic access to recorded meetings, transcripts and AI-generated notes, plus meeting import and webhook event delivery.
+
+    '
+  contact:
+    name: tl;dv Developer Support
+    email: dev@tldv.io
+    url: https://doc.tldv.io
+  x-apievangelist-generated: true
+servers:
+- url: https://pasta.tldv.io
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: System
+  description: Service health
+paths:
+  /v1alpha1/health:
+    get:
+      operationId: getHealth
+      summary: Service health check
+      description: Verify that the API service is available.
+      tags:
+      - System
+      security: []
+      responses:
+        '200':
+          description: Service is healthy.
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: 'API key issued from tl;dv account settings (https://tldv.io/app/settings/personal-settings/api-keys), sent on the x-api-key request header.
+
+        '

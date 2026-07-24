@@ -1,0 +1,147 @@
+openapi: 3.0.3
+info:
+  title: tl;dv Meetings Notes API
+  version: v1alpha1
+  description: 'Public API for tl;dv, the AI meeting notetaker for Zoom, Google Meet and Microsoft Teams. Programmatic access to recorded meetings, transcripts and AI-generated notes, plus meeting import and webhook event delivery.
+
+    '
+  contact:
+    name: tl;dv Developer Support
+    email: dev@tldv.io
+    url: https://doc.tldv.io
+  x-apievangelist-generated: true
+servers:
+- url: https://pasta.tldv.io
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Notes
+  description: Retrieve AI-generated meeting notes
+paths:
+  /v1alpha1/meetings/{meetingId}/notes:
+    get:
+      operationId: getNotes
+      summary: Retrieve meeting notes
+      description: Retrieve the AI-generated notes for a meeting.
+      tags:
+      - Notes
+      parameters:
+      - $ref: '#/components/parameters/MeetingId'
+      responses:
+        '200':
+          description: The meeting notes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notes'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /v1alpha1/meetings/{meetingId}/highlights:
+    get:
+      operationId: getHighlights
+      summary: Retrieve meeting highlights
+      description: Retrieve highlights for a meeting.
+      deprecated: true
+      tags:
+      - Notes
+      parameters:
+      - $ref: '#/components/parameters/MeetingId'
+      responses:
+        '200':
+          description: The meeting highlights.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Forbidden:
+      description: The API key is not permitted to access this resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    MeetingId:
+      name: meetingId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Unique identifier of the meeting.
+  schemas:
+    Notes:
+      type: object
+      properties:
+        meetingId:
+          type: string
+        markdownContent:
+          type: string
+        structuredNotes:
+          type: array
+          items:
+            type: object
+            properties:
+              segmentId:
+                type: string
+              timestamp:
+                type: number
+              text:
+                type: string
+              topicId:
+                type: string
+        topics:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              order:
+                type: integer
+              title:
+                type: string
+              summary:
+                type: string
+    Error:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: 'API key issued from tl;dv account settings (https://tldv.io/app/settings/personal-settings/api-keys), sent on the x-api-key request header.
+
+        '
