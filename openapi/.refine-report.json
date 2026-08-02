@@ -1,0 +1,20 @@
+{
+  "provider": "tl-dv",
+  "sources": [
+    "tl-dv-meetings-api-openapi.yml",
+    "tl-dv-notes-api-openapi.yml",
+    "tl-dv-system-api-openapi.yml",
+    "tl-dv-transcripts-api-openapi.yml"
+  ],
+  "outputs": [
+    "tl-dv-meetings-api-openapi.yml",
+    "tl-dv-notes-api-openapi.yml",
+    "tl-dv-system-api-openapi.yml",
+    "tl-dv-transcripts-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

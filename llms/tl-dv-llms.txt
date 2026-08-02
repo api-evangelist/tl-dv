@@ -1,0 +1,42 @@
+# tl;dv
+
+> tl;dv is an AI meeting notetaker for Zoom, Google Meet and Microsoft Teams that records, transcribes and summarizes meetings. Its public API (base URL https://pasta.tldv.io, version v1alpha1) provides programmatic access to meetings, transcripts and AI notes, meeting import, and webhook event delivery.
+
+## API
+
+- [tl;dv API reference](https://doc.tldv.io): Meetings, transcripts, notes, import and webhooks. Auth via x-api-key header.
+- Base URL: https://pasta.tldv.io
+- Authentication: API key on the `x-api-key` header. Manage keys at https://tldv.io/app/settings/personal-settings/api-keys
+
+## Operations
+
+- GET /v1alpha1/meetings — List meetings (page, limit, meetingType filter)
+- POST /v1alpha1/meetings/import — Import a meeting from a URL
+- GET /v1alpha1/meetings/{meetingId} — Retrieve a meeting
+- GET /v1alpha1/meetings/{meetingId}/transcript — Retrieve a transcript
+- GET /v1alpha1/meetings/{meetingId}/notes — Retrieve AI notes
+- GET /v1alpha1/meetings/{meetingId}/download — Download recording (302 to signed URL)
+- GET /v1alpha1/health — Service health
+
+## Webhooks
+
+- MeetingReady — a meeting finished processing
+- TranscriptReady — a transcript is available
+- Configurable at user, team or organization level. Payload: {id, event, data, executedAt}
+
+## Specs (API Evangelist artifacts)
+
+- [OpenAPI](https://raw.githubusercontent.com/api-evangelist/tl-dv/refs/heads/main/openapi/tl-dv-openapi.yml)
+- [Webhooks (AsyncAPI)](https://raw.githubusercontent.com/api-evangelist/tl-dv/refs/heads/main/asyncapi/tl-dv-webhooks.yml)
+- [Authentication](https://raw.githubusercontent.com/api-evangelist/tl-dv/refs/heads/main/authentication/tl-dv-authentication.yml)
+- [Conventions](https://raw.githubusercontent.com/api-evangelist/tl-dv/refs/heads/main/conventions/tl-dv-conventions.yml)
+- [Error catalog](https://raw.githubusercontent.com/api-evangelist/tl-dv/refs/heads/main/errors/tl-dv-problem-types.yml)
+
+## Docs
+
+- [Documentation](https://doc.tldv.io)
+- [Security commitment](https://tldv.io/features/security-commitment/)
+- [Trust center](https://trust.tldv.io)
+- [Pricing](https://tldv.io/app/pricing/)
+- [Help center](https://intercom.help/tldv/en)
+- [Blog](https://tldv.io/blog/)

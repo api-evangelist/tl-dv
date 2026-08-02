@@ -1,0 +1,24 @@
+generated: '2026-07-21'
+method: searched
+source: https://doc.tldv.io
+docs: https://doc.tldv.io
+summary:
+  types: [apiKey]
+  api_key_in: [header]
+  api_key_names: [x-api-key]
+  oauth2_flows: []
+schemes:
+  - name: ApiKeyAuth
+    type: apiKey
+    in: header
+    parameter: x-api-key
+    description: >
+      All requests authenticate with an API key sent on the x-api-key header.
+      Keys are issued per user from tl;dv account settings and can be scoped to
+      user, team, or organization context.
+    key_management_url: https://tldv.io/app/settings/personal-settings/api-keys
+    sources: [openapi/tl-dv-openapi.yml]
+notes: >
+  tl;dv uses a single API-key model (no OAuth2/OIDC scope surface), so a scopes/
+  artifact is intentionally omitted. Health check (GET /v1alpha1/health) is the
+  only unauthenticated operation.

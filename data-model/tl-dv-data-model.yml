@@ -1,0 +1,47 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/tl-dv-openapi.yml
+entities:
+  - name: Meeting
+    description: A recorded meeting with organizer and invitees.
+    fields: [id, name, happenedAt, url, duration, organizer, invitees, template, extraProperties]
+  - name: Person
+    description: An organizer or invitee (name + email).
+    fields: [name, email]
+  - name: Transcript
+    description: The speaker-attributed transcript of a meeting.
+    fields: [id, meetingId, data]
+  - name: TranscriptSegment
+    description: A single spoken segment within a transcript.
+    fields: [speaker, text, startTime, endTime]
+  - name: Notes
+    description: AI-generated notes for a meeting.
+    fields: [meetingId, markdownContent, structuredNotes, topics]
+  - name: Topic
+    description: A topic grouping within meeting notes.
+    fields: [id, order, title, summary]
+relationships:
+  - from: Meeting
+    to: Person
+    type: has_one
+    via: organizer
+  - from: Meeting
+    to: Person
+    type: has_many
+    via: invitees
+  - from: Transcript
+    to: Meeting
+    type: belongs_to
+    via: meetingId
+  - from: Transcript
+    to: TranscriptSegment
+    type: has_many
+    via: data
+  - from: Notes
+    to: Meeting
+    type: belongs_to
+    via: meetingId
+  - from: Notes
+    to: Topic
+    type: has_many
+    via: topics

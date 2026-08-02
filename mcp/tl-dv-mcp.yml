@@ -1,0 +1,30 @@
+generated: '2026-07-21'
+method: derived
+status: candidate
+source: openapi/tl-dv-openapi.yml
+note: >
+  No official tl;dv MCP server was found. This is a candidate tool list derived
+  one-to-one from the documented API operations, for use in building an MCP
+  wrapper. Not an endorsed or hosted server.
+server:
+  name: tl-dv
+  transport: http
+tools:
+  - name: list_meetings
+    description: List meetings for the account, with pagination and meetingType filter.
+    source_operation: openapi/tl-dv-openapi.yml#getMeetings
+  - name: import_meeting
+    description: Import a meeting recording from a URL for processing.
+    source_operation: openapi/tl-dv-openapi.yml#importMeeting
+  - name: get_meeting
+    description: Retrieve a single meeting by id.
+    source_operation: openapi/tl-dv-openapi.yml#getMeeting
+  - name: get_transcript
+    description: Retrieve the transcript for a meeting.
+    source_operation: openapi/tl-dv-openapi.yml#getTranscript
+  - name: get_notes
+    description: Retrieve the AI-generated notes for a meeting.
+    source_operation: openapi/tl-dv-openapi.yml#getNotes
+  - name: download_recording
+    description: Get the signed download URL for a meeting recording.
+    source_operation: openapi/tl-dv-openapi.yml#downloadRecording

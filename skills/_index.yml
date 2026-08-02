@@ -1,0 +1,11 @@
+generated: '2026-07-21'
+method: generated
+skills:
+  - file: tl-dv-pull-meeting-intelligence.md
+    name: Pull meeting intelligence from tl;dv
+    api: openapi/tl-dv-openapi.yml
+    operations: [getMeetings, getMeeting, getTranscript, getNotes]
+  - file: tl-dv-import-and-retrieve.md
+    name: Import a recording into tl;dv and retrieve results
+    api: openapi/tl-dv-openapi.yml
+    operations: [importMeeting, getMeetings, getMeeting, getTranscript, downloadRecording]

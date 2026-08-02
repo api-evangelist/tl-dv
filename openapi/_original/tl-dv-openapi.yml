@@ -1,0 +1,341 @@
+# generated: '2026-07-21'
+# method: generated
+# source: https://doc.tldv.io
+# note: Faithful transcription of the published tl;dv API reference (doc.tldv.io).
+#       Only documented paths, methods, parameters, and response fields are included.
+#       No spec is published for public download (provider directs to dev@tldv.io); this
+#       is an API Evangelist reconstruction, not the provider's authoritative spec.
+openapi: 3.0.3
+info:
+  title: tl;dv API
+  version: v1alpha1
+  description: >
+    Public API for tl;dv, the AI meeting notetaker for Zoom, Google Meet and
+    Microsoft Teams. Programmatic access to recorded meetings, transcripts and
+    AI-generated notes, plus meeting import and webhook event delivery.
+  contact:
+    name: tl;dv Developer Support
+    email: dev@tldv.io
+    url: https://doc.tldv.io
+  x-apievangelist-generated: true
+servers:
+  - url: https://pasta.tldv.io
+    description: Production
+security:
+  - ApiKeyAuth: []
+tags:
+  - name: Meetings
+    description: List, retrieve, import and download meetings
+  - name: Transcripts
+    description: Retrieve meeting transcripts
+  - name: Notes
+    description: Retrieve AI-generated meeting notes
+  - name: System
+    description: Service health
+paths:
+  /v1alpha1/meetings:
+    get:
+      operationId: getMeetings
+      summary: List meetings
+      description: Returns a paginated list of meetings for the authenticated account.
+      tags: [Meetings]
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1 }
+          description: Page number of results to return.
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer }
+          description: Number of results per page.
+        - name: meetingType
+          in: query
+          required: false
+          schema: { type: string, enum: [internal, external] }
+          description: Filter meetings by type.
+      responses:
+        '200':
+          description: A paginated list of meetings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingList'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /v1alpha1/meetings/import:
+    post:
+      operationId: importMeeting
+      summary: Import a meeting
+      description: Import a meeting recording from an external URL for processing.
+      tags: [Meetings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportMeetingRequest'
+      responses:
+        '200':
+          description: Import job accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportMeetingResponse'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /v1alpha1/meetings/{meetingId}:
+    get:
+      operationId: getMeeting
+      summary: Retrieve a meeting
+      description: Retrieve a single meeting by its identifier.
+      tags: [Meetings]
+      parameters:
+        - $ref: '#/components/parameters/MeetingId'
+      responses:
+        '200':
+          description: The requested meeting.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meeting'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /v1alpha1/meetings/{meetingId}/transcript:
+    get:
+      operationId: getTranscript
+      summary: Retrieve a meeting transcript
+      description: Retrieve the transcript for a meeting.
+      tags: [Transcripts]
+      parameters:
+        - $ref: '#/components/parameters/MeetingId'
+      responses:
+        '200':
+          description: The meeting transcript.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transcript'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /v1alpha1/meetings/{meetingId}/notes:
+    get:
+      operationId: getNotes
+      summary: Retrieve meeting notes
+      description: Retrieve the AI-generated notes for a meeting.
+      tags: [Notes]
+      parameters:
+        - $ref: '#/components/parameters/MeetingId'
+      responses:
+        '200':
+          description: The meeting notes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notes'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /v1alpha1/meetings/{meetingId}/highlights:
+    get:
+      operationId: getHighlights
+      summary: Retrieve meeting highlights
+      description: Retrieve highlights for a meeting.
+      deprecated: true
+      tags: [Notes]
+      parameters:
+        - $ref: '#/components/parameters/MeetingId'
+      responses:
+        '200':
+          description: The meeting highlights.
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /v1alpha1/meetings/{meetingId}/download:
+    get:
+      operationId: downloadRecording
+      summary: Download a meeting recording
+      description: >
+        Returns a 302 redirect whose Location header points at a signed URL for
+        the meeting recording file.
+      tags: [Meetings]
+      parameters:
+        - $ref: '#/components/parameters/MeetingId'
+      responses:
+        '302':
+          description: Redirect to the signed recording URL.
+          headers:
+            Location:
+              schema: { type: string, format: uri }
+              description: Signed URL of the recording file.
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /v1alpha1/health:
+    get:
+      operationId: getHealth
+      summary: Service health check
+      description: Verify that the API service is available.
+      tags: [System]
+      security: []
+      responses:
+        '200':
+          description: Service is healthy.
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: >
+        API key issued from tl;dv account settings
+        (https://tldv.io/app/settings/personal-settings/api-keys), sent on the
+        x-api-key request header.
+  parameters:
+    MeetingId:
+      name: meetingId
+      in: path
+      required: true
+      schema: { type: string }
+      description: Unique identifier of the meeting.
+  responses:
+    BadRequest:
+      description: Validation error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: The API key is not permitted to access this resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Meeting:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        happenedAt: { type: string, format: date-time }
+        url: { type: string, format: uri }
+        duration: { type: number, description: Meeting duration in seconds. }
+        organizer:
+          $ref: '#/components/schemas/Person'
+        invitees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+        template: { type: string }
+        extraProperties:
+          type: object
+          properties:
+            conferenceId: { type: string }
+    Person:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string, format: email }
+    MeetingList:
+      type: object
+      properties:
+        page: { type: integer }
+        pages: { type: integer }
+        total: { type: integer }
+        pageSize: { type: integer }
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Meeting'
+    Transcript:
+      type: object
+      properties:
+        id: { type: string }
+        meetingId: { type: string }
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              speaker: { type: string }
+              text: { type: string }
+              startTime: { type: number }
+              endTime: { type: number }
+    Notes:
+      type: object
+      properties:
+        meetingId: { type: string }
+        markdownContent: { type: string }
+        structuredNotes:
+          type: array
+          items:
+            type: object
+            properties:
+              segmentId: { type: string }
+              timestamp: { type: number }
+              text: { type: string }
+              topicId: { type: string }
+        topics:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              order: { type: integer }
+              title: { type: string }
+              summary: { type: string }
+    ImportMeetingRequest:
+      type: object
+      properties:
+        url: { type: string, format: uri, description: URL of the recording to import. }
+        name: { type: string }
+        happenedAt: { type: string, format: date-time }
+    ImportMeetingResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        jobId: { type: string }
+        message: { type: string }
+    Error:
+      type: object
+      properties:
+        name: { type: string }
+        message: { type: string }
+    ValidationError:
+      type: object
+      properties:
+        message: { type: string }
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              property: { type: string }
+              constraints: { type: object, additionalProperties: { type: string } }

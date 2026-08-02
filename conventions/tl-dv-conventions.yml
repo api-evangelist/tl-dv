@@ -1,0 +1,48 @@
+generated: '2026-07-21'
+method: searched
+source: https://doc.tldv.io
+authentication:
+  style: api-key
+  header: x-api-key
+  docs: https://doc.tldv.io
+  see: authentication/tl-dv-authentication.yml
+idempotency:
+  supported: false
+  note: >
+    tl;dv does not document an idempotency-key mechanism. Writes are limited to
+    the import operation, which returns a jobId for asynchronous processing.
+pagination:
+  style: page-number
+  request_params: [page, limit]
+  response_fields: [page, pages, total, pageSize, results]
+  note: >
+    List endpoints (GET /v1alpha1/meetings) return a page envelope with page,
+    pages, total and pageSize alongside the results array.
+filtering:
+  meetings:
+    param: meetingType
+    values: [internal, external]
+versioning:
+  scheme: uri-path
+  current: v1alpha1
+  note: The version prefix (v1alpha1) is carried in every request path.
+error_envelope:
+  format: json
+  shapes:
+    - fields: [name, message]
+      used_by: [401, 403, 404, 500]
+    - fields: [message, errors]
+      used_by: [400]
+      note: errors[] carries per-field {property, constraints}.
+  see: errors/tl-dv-problem-types.yml
+events:
+  style: webhooks
+  events: [MeetingReady, TranscriptReady]
+  payload_fields: [id, event, data, executedAt]
+  configuration_levels: [user, team, organization]
+  see: asyncapi/tl-dv-webhooks.yml
+downloads:
+  style: 302-redirect-to-signed-url
+  operation: downloadRecording
+rate_limits:
+  documented: false

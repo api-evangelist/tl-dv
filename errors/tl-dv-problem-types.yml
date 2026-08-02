@@ -1,0 +1,34 @@
+generated: '2026-07-21'
+method: searched
+source: https://doc.tldv.io
+format: json
+note: >
+  tl;dv does not use RFC 9457 application/problem+json. Errors are plain JSON.
+  4xx/5xx responses carry {name, message}; 400 validation errors carry
+  {message, errors[]} where each error is {property, constraints}.
+envelope:
+  standard: { fields: [name, message] }
+  validation: { fields: [message, errors], item_fields: [property, constraints] }
+problems:
+  - status: 400
+    title: Validation error
+    description: The request body or parameters failed validation.
+    envelope: validation
+    source_operation: openapi/tl-dv-openapi.yml#importMeeting
+  - status: 401
+    title: Unauthorized
+    description: The x-api-key header is missing or the API key is invalid.
+    envelope: standard
+  - status: 403
+    title: Forbidden
+    description: The API key is not permitted to access the requested resource.
+    envelope: standard
+  - status: 404
+    title: Not found
+    description: The requested meeting or resource does not exist.
+    envelope: standard
+    source_operation: openapi/tl-dv-openapi.yml#getMeeting
+  - status: 500
+    title: Internal server error
+    description: An unexpected error occurred on the server.
+    envelope: standard

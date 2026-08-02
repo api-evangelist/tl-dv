@@ -1,8 +1,32 @@
 aid: tl-dv
+x-enrichment:
+  date: '2026-07-21'
+  status: enriched
+  artifacts_added: 17
+  pass: local-v1
 name: tl;dv
-description: tl;dv is a company surfaced as a portfolio company of seedcamp and added to the API Evangelist
-  network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  tl;dv is an AI meeting notetaker for Zoom, Google Meet and Microsoft Teams that
+  automatically records, transcribes and summarizes meetings in 30+ languages and
+  syncs the resulting insights into CRMs and productivity tools. Its public API
+  (base URL https://pasta.tldv.io, version v1alpha1) gives developers programmatic
+  access to meetings, speaker-attributed transcripts and AI-generated notes, plus
+  meeting import from a URL and webhook delivery of MeetingReady and TranscriptReady
+  events. Authentication is via an x-api-key header issued from account settings.
 url: https://raw.githubusercontent.com/api-evangelist/tl-dv/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://api.tldv.io/assets/images/logo_login.png
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
@@ -11,10 +35,123 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-21'
 tags:
 - Company
-apis: []
+- AI
+- Meetings
+- Transcription
+- Notetaking
+- Conversation Intelligence
+- Productivity
+- Video
+- Webhooks
+- API
+apis:
+- aid: tl-dv:tl-dv-meetings-api
+  name: tl;dv Meetings API
+  description: List, retrieve, import and download meetings
+  humanURL: https://doc.tldv.io
+  baseURL: https://pasta.tldv.io
+  tags:
+  - Meetings
+  properties:
+  - type: OpenAPI
+    url: openapi/tl-dv-meetings-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/tl-dv-webhooks.yml
+  - type: Webhooks
+    url: asyncapi/tl-dv-webhooks.yml
+  - type: Authentication
+    url: authentication/tl-dv-authentication.yml
+  - type: Conventions
+    url: conventions/tl-dv-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tl-dv-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/tl-dv-lifecycle.yml
+  - type: DataModel
+    url: data-model/tl-dv-data-model.yml
+  - type: Conformance
+    url: conformance/tl-dv-conformance.yml
+- aid: tl-dv:tl-dv-notes-api
+  name: tl;dv Notes API
+  description: Retrieve AI-generated meeting notes
+  humanURL: https://doc.tldv.io
+  baseURL: https://pasta.tldv.io
+  tags:
+  - Notes
+  properties:
+  - type: OpenAPI
+    url: openapi/tl-dv-notes-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/tl-dv-webhooks.yml
+  - type: Webhooks
+    url: asyncapi/tl-dv-webhooks.yml
+  - type: Authentication
+    url: authentication/tl-dv-authentication.yml
+  - type: Conventions
+    url: conventions/tl-dv-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tl-dv-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/tl-dv-lifecycle.yml
+  - type: DataModel
+    url: data-model/tl-dv-data-model.yml
+  - type: Conformance
+    url: conformance/tl-dv-conformance.yml
+- aid: tl-dv:tl-dv-system-api
+  name: tl;dv System API
+  description: Service health
+  humanURL: https://doc.tldv.io
+  baseURL: https://pasta.tldv.io
+  tags:
+  - System
+  properties:
+  - type: OpenAPI
+    url: openapi/tl-dv-system-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/tl-dv-webhooks.yml
+  - type: Webhooks
+    url: asyncapi/tl-dv-webhooks.yml
+  - type: Authentication
+    url: authentication/tl-dv-authentication.yml
+  - type: Conventions
+    url: conventions/tl-dv-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tl-dv-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/tl-dv-lifecycle.yml
+  - type: DataModel
+    url: data-model/tl-dv-data-model.yml
+  - type: Conformance
+    url: conformance/tl-dv-conformance.yml
+- aid: tl-dv:tl-dv-transcripts-api
+  name: tl;dv Transcripts API
+  description: Retrieve meeting transcripts
+  humanURL: https://doc.tldv.io
+  baseURL: https://pasta.tldv.io
+  tags:
+  - Transcripts
+  properties:
+  - type: OpenAPI
+    url: openapi/tl-dv-transcripts-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/tl-dv-webhooks.yml
+  - type: Webhooks
+    url: asyncapi/tl-dv-webhooks.yml
+  - type: Authentication
+    url: authentication/tl-dv-authentication.yml
+  - type: Conventions
+    url: conventions/tl-dv-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tl-dv-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/tl-dv-lifecycle.yml
+  - type: DataModel
+    url: data-model/tl-dv-data-model.yml
+  - type: Conformance
+    url: conformance/tl-dv-conformance.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -22,4 +159,38 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: http://tldv.io
+  url: https://tldv.io
+- type: DeveloperPortal
+  url: https://doc.tldv.io
+- type: Documentation
+  url: https://doc.tldv.io
+- type: APIReference
+  url: https://doc.tldv.io
+- type: GettingStarted
+  url: https://doc.tldv.io
+- type: Blog
+  url: https://tldv.io/blog/
+- type: Support
+  url: https://intercom.help/tldv/en
+- type: Pricing
+  url: https://tldv.io/app/pricing/
+- type: SignUp
+  url: https://tldv.io/app/signup
+- type: Login
+  url: https://tldv.io/app/
+- type: TermsOfService
+  url: https://tldv.io/terms/
+- type: PrivacyPolicy
+  url: https://tldv.io/privacy/
+- type: Security
+  url: https://tldv.io/features/security-commitment/
+- type: TrustCenter
+  url: https://trust.tldv.io/
+- type: Compliance
+  url: https://tldv.io/features/security-commitment/
+- type: LLMsTxt
+  url: llms/tl-dv-llms.txt
+- type: DomainSecurity
+  url: security/tl-dv-domain-security.yml
+- type: WellKnown
+  url: well-known/tl-dv-well-known.yml

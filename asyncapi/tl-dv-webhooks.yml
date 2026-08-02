@@ -1,0 +1,62 @@
+# generated: '2026-07-21'
+# method: generated
+# source: https://doc.tldv.io
+# note: AsyncAPI reconstruction of tl;dv's documented webhook events. tl;dv does
+#       not publish an AsyncAPI document; this captures the published webhook
+#       catalog (MeetingReady, TranscriptReady) faithfully. No fabricated events.
+asyncapi: 2.6.0
+info:
+  title: tl;dv Webhooks
+  version: v1alpha1
+  description: >
+    Webhook events delivered by tl;dv when a meeting finishes processing or a
+    transcript becomes available. Webhooks are configurable at user, team or
+    organization level.
+  contact:
+    name: tl;dv Developer Support
+    email: dev@tldv.io
+    url: https://doc.tldv.io
+defaultContentType: application/json
+channels:
+  MeetingReady:
+    subscribe:
+      operationId: onMeetingReady
+      summary: A meeting has finished processing and is ready to be used.
+      message:
+        $ref: '#/components/messages/MeetingReady'
+  TranscriptReady:
+    subscribe:
+      operationId: onTranscriptReady
+      summary: A meeting transcript has been generated and is available.
+      message:
+        $ref: '#/components/messages/TranscriptReady'
+components:
+  messages:
+    MeetingReady:
+      name: MeetingReady
+      title: Meeting ready
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/WebhookEnvelope'
+    TranscriptReady:
+      name: TranscriptReady
+      title: Transcript ready
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/WebhookEnvelope'
+  schemas:
+    WebhookEnvelope:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the webhook delivery.
+        event:
+          type: string
+          enum: [MeetingReady, TranscriptReady]
+        data:
+          type: object
+          description: The meeting or transcript payload for the event.
+        executedAt:
+          type: string
+          format: date-time

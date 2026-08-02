@@ -1,0 +1,22 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/tl-dv-openapi.yml
+standards:
+  - id: oauth2
+    conforms: false
+    evidence: API-key authentication only (x-api-key header).
+  - id: oidc
+    conforms: false
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: Errors are plain JSON {name, message}, not application/problem+json.
+  - id: rfc8594-sunset-header
+    conforms: false
+  - id: json-api
+    conforms: false
+  - id: webhooks
+    conforms: true
+    evidence: Documented MeetingReady and TranscriptReady webhook events.
+  - id: pagination
+    conforms: true
+    evidence: page/pages/total/pageSize envelope on list endpoints.

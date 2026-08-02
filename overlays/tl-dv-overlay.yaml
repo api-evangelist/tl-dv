@@ -1,0 +1,23 @@
+# generated: '2026-07-21'
+# method: generated
+# source: openapi/tl-dv-openapi.yml
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for tl;dv
+  version: 1.0.0
+extends: openapi/tl-dv-openapi.yml
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-rating: 3
+      x-artifacts:
+        authentication: authentication/tl-dv-authentication.yml
+        conventions: conventions/tl-dv-conventions.yml
+        errors: errors/tl-dv-problem-types.yml
+        lifecycle: lifecycle/tl-dv-lifecycle.yml
+        webhooks: asyncapi/tl-dv-webhooks.yml
+        data_model: data-model/tl-dv-data-model.yml
+  - target: $.info
+    update:
+      x-support-email: dev@tldv.io
+      x-api-key-management: https://tldv.io/app/settings/personal-settings/api-keys

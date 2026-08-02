@@ -1,0 +1,19 @@
+generated: '2026-07-21'
+method: searched
+probe: true
+url: https://trust.tldv.io/
+source: https://tldv.io/features/security-commitment/
+certifications:
+  - SOC 2
+  - ISO 27001
+  - PCI DSS
+  - GDPR
+evidence:
+  - source: https://tldv.io/features/security-commitment/
+    keywords: [soc 2, iso 27001, pci dss, gdpr, encryption, certified]
+  - source: https://trust.tldv.io/
+    kind: trust-center
+notes: >
+  tl;dv publishes a security commitment page naming SOC 2, ISO 27001, PCI DSS and
+  GDPR compliance, and hosts a trust center at trust.tldv.io. Data is encrypted
+  in transit and at rest per the security commitment page.
