@@ -1,8 +1,8 @@
 aid: tl-dv
 x-enrichment:
-  date: '2026-07-21'
+  date: '2026-08-14'
   status: enriched
-  artifacts_added: 17
+  artifacts_added: 9
   pass: local-v1
 name: tl;dv
 description: >-
@@ -12,7 +12,12 @@ description: >-
   (base URL https://pasta.tldv.io, version v1alpha1) gives developers programmatic
   access to meetings, speaker-attributed transcripts and AI-generated notes, plus
   meeting import from a URL and webhook delivery of MeetingReady and TranscriptReady
-  events. Authentication is via an x-api-key header issued from account settings.
+  events. Authentication is via an x-api-key header issued from account settings,
+  and API access requires a Business or Enterprise plan. tl;dv also ships an
+  official Model Context Protocol server — an open-source stdio build at
+  github.com/tldv-public/tldv-mcp-server exposing four read tools, plus a live
+  OAuth-protected hosted endpoint at https://mcp.tldv.io/mcp — making meetings,
+  transcripts and highlights callable directly by AI agents.
 url: https://raw.githubusercontent.com/api-evangelist/tl-dv/refs/heads/main/apis.yml
 accessModel:
   pricing: unknown
@@ -35,7 +40,7 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-21'
+modified: '2026-08-14'
 tags:
 - Company
 - AI
@@ -158,6 +163,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/tl-dv-agentic-access.yml
 - type: AgentSkill
   url: skills/tl-dv-import-and-retrieve.md
 - type: MCPServer
@@ -200,3 +207,19 @@ common:
   url: security/tl-dv-domain-security.yml
 - type: WellKnown
   url: well-known/tl-dv-well-known.yml
+- type: ToolCrosswalk
+  url: mcp/tl-dv-tool-crosswalk.yml
+- type: OAuthScopes
+  url: scopes/tl-dv-scopes.yml
+- type: Packages
+  url: packages/tl-dv-packages.yml
+- type: Plans
+  url: plans/tl-dv-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/tl-dv-rate-limits.yml
+- type: AgentSkill
+  url: skills/tl-dv-pull-meeting-intelligence.md
+- type: GitHubOrganization
+  url: https://github.com/tldv-public
+- type: SourceCode
+  url: https://github.com/tldv-public/tldv-mcp-server
