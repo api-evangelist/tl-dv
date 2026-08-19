@@ -1,22 +1,115 @@
-generated: '2026-07-21'
+generated: '2026-08-14'
 method: derived
-source: openapi/tl-dv-openapi.yml
+source: openapi/*.yml + well-known/*.json + probes of pasta.tldv.io and mcp.tldv.io
+note: >
+  Re-derived 2026-08-14. The prior round assessed the REST surface only and
+  recorded oauth2 as non-conformant, which is still true of the REST API — but
+  tl;dv now also operates an OAuth-protected hosted MCP endpoint, so several
+  standards flip to true on that surface. Each entry names WHICH surface it
+  applies to, because tl;dv's two surfaces have materially different postures.
 standards:
   - id: oauth2
-    conforms: false
-    evidence: API-key authentication only (x-api-key header).
+    conforms: true
+    surface: mcp
+    evidence: >-
+      RFC 6749 authorization_code + refresh_token grants advertised at
+      https://keycloak.tldv.io/realms/mcp.tldv.io (see
+      well-known/tl-dv-oauth-authorization-server.json). REST API remains
+      api-key only.
+  - id: oauth2-pkce
+    conforms: true
+    surface: mcp
+    evidence: code_challenge_methods_supported = [S256]
+  - id: rfc8414-oauth-authorization-server-metadata
+    conforms: true
+    surface: mcp
+    evidence: >-
+      https://mcp.tldv.io/.well-known/oauth-authorization-server returns 200
+      with issuer, authorization_endpoint, token_endpoint, registration_endpoint,
+      revocation_endpoint and introspection_endpoint.
+  - id: rfc9728-oauth-protected-resource-metadata
+    conforms: true
+    surface: mcp
+    evidence: >-
+      https://mcp.tldv.io/.well-known/oauth-protected-resource returns 200 with
+      resource, authorization_servers and scopes_supported.
+  - id: rfc6750-bearer-token
+    conforms: true
+    surface: mcp
+    evidence: >-
+      Unauthenticated POST returns 401 with a WWW-Authenticate Bearer challenge
+      carrying error="invalid_token" and a resource_metadata parameter.
+  - id: rfc7591-dynamic-client-registration
+    conforms: true
+    surface: mcp
+    evidence: >-
+      registration_endpoint published at
+      https://keycloak.tldv.io/realms/mcp.tldv.io/clients-registrations/openid-connect
+  - id: mcp
+    conforms: true
+    surface: mcp
+    evidence: >-
+      Official first-party MCP server (github.com/tldv-public/tldv-mcp-server,
+      @modelcontextprotocol/sdk ^1.8.0, stdio transport) plus a live hosted
+      streamable-HTTP endpoint at https://mcp.tldv.io/mcp.
   - id: oidc
     conforms: false
+    surface: mcp
+    evidence: >-
+      The authorization server is a Keycloak OIDC realm and id_token response
+      types are advertised, but /.well-known/openid-configuration returns 404 on
+      mcp.tldv.io and no OIDC discovery document is published on any tl;dv host,
+      so OIDC discovery is not conformantly exposed.
   - id: rfc9457-problem-details
     conforms: false
-    evidence: Errors are plain JSON {name, message}, not application/problem+json.
+    surface: rest
+    evidence: >-
+      Errors are plain JSON. Probed live: GET /v1alpha1/meetings unauthenticated
+      returns 401 {"name":"AuthorizationRequiredError","message":"..."} with
+      content-type application/json, not application/problem+json.
   - id: rfc8594-sunset-header
     conforms: false
+    surface: rest
+    evidence: >-
+      getHighlights is marked deprecated in the reference, but no Deprecation or
+      Sunset response header is emitted and no deprecation policy is published.
+  - id: rfc9116-security-txt
+    conforms: false
+    surface: all
+    evidence: /.well-known/security.txt returns 404 on all five probed hosts.
+  - id: rfc9331-ratelimit-headers
+    conforms: false
+    surface: rest
+    evidence: >-
+      No RateLimit-* or X-RateLimit-* headers observed on probed responses,
+      although the first-party client retries on 429. See
+      rate-limits/tl-dv-rate-limits.yml.
+  - id: a2a
+    conforms: false
+    surface: all
+    evidence: >-
+      No agent card at /.well-known/agent-card.json or /.well-known/agent.json
+      on any of the five probed hosts.
   - id: json-api
     conforms: false
+    surface: rest
   - id: webhooks
     conforms: true
+    surface: rest
     evidence: Documented MeetingReady and TranscriptReady webhook events.
   - id: pagination
     conforms: true
+    surface: rest
     evidence: page/pages/total/pageSize envelope on list endpoints.
+  - id: hsts
+    conforms: true
+    surface: all
+    evidence: >-
+      strict-transport-security max-age=15552000; includeSubDomains; preload
+      observed on tldv.io, doc.tldv.io, pasta.tldv.io and mcp.tldv.io.
+compliance_program:
+  published: true
+  url: https://tldv.io/features/security-commitment/
+  trust_center: https://trust.tldv.io/
+  certifications: [SOC 2, ISO 27001, PCI DSS, GDPR]
+  see: security/tl-dv-trust-center.yml

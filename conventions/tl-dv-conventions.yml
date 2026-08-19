@@ -1,4 +1,4 @@
-generated: '2026-07-21'
+generated: '2026-08-14'
 method: searched
 source: https://doc.tldv.io
 authentication:
@@ -6,6 +6,16 @@ authentication:
   header: x-api-key
   docs: https://doc.tldv.io
   see: authentication/tl-dv-authentication.yml
+  plan_requirement: Business or Enterprise tl;dv account
+  mcp_surface:
+    style: oauth2
+    endpoint: https://mcp.tldv.io/mcp
+    scope: mcp:tools
+    see: scopes/tl-dv-scopes.yml
+    note: >
+      The hosted MCP endpoint does NOT accept the x-api-key credential; it
+      requires an OAuth bearer token. The stdio MCP server does use the API key
+      (TLDV_API_KEY env var).
 idempotency:
   supported: false
   note: >
@@ -44,5 +54,30 @@ events:
 downloads:
   style: 302-redirect-to-signed-url
   operation: downloadRecording
+request_tracing:
+  header: x-tldx-trace-id
+  direction: response
+  observed: true
+  documented: false
+  note: >
+    Every response from pasta.tldv.io carries an x-tldx-trace-id (observed
+    2026-08-14 on both a 200 health response and a 401). tl;dv does not
+    document it, but it is the correlation id to quote to dev@tldv.io.
 rate_limits:
   documented: false
+  exhaustion_status: 429
+  response_headers: none observed
+  see: rate-limits/tl-dv-rate-limits.yml
+  note: >
+    Not documented anywhere, but the first-party MCP client retries on 429 with
+    exponential backoff, so the API does throttle. Clients must implement their
+    own backoff.
+sandbox:
+  available: false
+  source: https://doc.tldv.io
+  note: >
+    The API reference states no sandbox environment is currently available, and
+    there is no test/live key separation — a single production API key issued
+    from account settings is the only credential. Any integration test runs
+    against real meeting data. A sandbox/ artifact is intentionally omitted
+    rather than fabricated.

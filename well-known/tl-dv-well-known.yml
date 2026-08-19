@@ -1,18 +1,79 @@
-generated: '2026-07-21'
+generated: '2026-08-14'
 method: searched
-source: https://tldv.io
-host: https://tldv.io
+source: live probes of tldv.io, doc.tldv.io, pasta.tldv.io, api.tldv.io, mcp.tldv.io
 note: >
-  No /.well-known/ discovery documents are published on tldv.io. All probed
-  paths returned 404. Recorded as valid negative results.
-documents:
-  - path: /.well-known/security.txt
-    status: 404
-  - path: /.well-known/openid-configuration
-    status: 404
-  - path: /.well-known/oauth-authorization-server
-    status: 404
-  - path: /.well-known/api-catalog
-    status: 404
-  - path: /.well-known/ai-plugin.json
-    status: 404
+  Re-probed 2026-08-14 across every host in apis.yml plus the API host and the
+  MCP host. The prior round probed only tldv.io and recorded an all-404 result;
+  that was accurate for that host but incomplete. Two REAL documents are served
+  on mcp.tldv.io — the RFC 9728 protected-resource metadata and the RFC 8414
+  authorization-server metadata backing the hosted MCP endpoint. Both are saved
+  verbatim below. The marketing host, the docs host and the API host serve
+  nothing under /.well-known/; those 404s are recorded as valid negative
+  results. No security.txt is published on any host.
+hosts:
+  - host: https://mcp.tldv.io
+    documents:
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        file: tl-dv-oauth-protected-resource.json
+        spec: RFC 9728
+        content_type: application/json
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        file: tl-dv-oauth-authorization-server.json
+        spec: RFC 8414
+        content_type: application/json
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /.well-known/agent-card.json, status: 404}
+      - {path: /.well-known/agent.json, status: 404}
+  - host: https://tldv.io
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/oauth-protected-resource, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /.well-known/agent-card.json, status: 404}
+      - {path: /.well-known/agent.json, status: 404}
+  - host: https://doc.tldv.io
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/oauth-protected-resource, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /.well-known/agent-card.json, status: 404}
+      - {path: /.well-known/agent.json, status: 404}
+  - host: https://pasta.tldv.io
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/oauth-protected-resource, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /.well-known/agent-card.json, status: 404}
+      - {path: /.well-known/agent.json, status: 404}
+  - host: https://api.tldv.io
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/oauth-protected-resource, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /.well-known/agent-card.json, status: 404}
+      - {path: /.well-known/agent.json, status: 404}
+summary:
+  hosts_probed: 5
+  documents_found: 2
+  security_txt: false
+  api_catalog: false
+  agent_card: false
+  oauth_discovery: true
+checked: '2026-08-14'

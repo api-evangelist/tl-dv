@@ -1,8 +1,14 @@
-generated: '2026-07-21'
+generated: '2026-08-14'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
 - host: tldv.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 27 04:06:04 2026 GMT
+  hsts: true
+  hsts_max_age: 15552000
+- host: doc.tldv.io
   https: true
   tls_version: TLSv1.3
   cert_expires: Sep 27 04:06:04 2026 GMT
@@ -17,12 +23,12 @@ domains:
 - domain: tldv.io
   dnssec: true
   caa:
-  - 0 issue "ssl.com"
-  - 0 issuewild "comodoca.com"
-  - 0 issuewild "digicert.com; cansignhttpexchanges=yes"
-  - 0 issuewild "letsencrypt.org"
-  - 0 issuewild "pki.goog; cansignhttpexchanges=yes"
   - 0 issuewild "ssl.com"
+  - 0 issue "Cloudflare Inc ECC CA-3"
+  - 0 issue "amazon.com"
+  - 0 issue "amazonaws.com"
+  - 0 issue "amazontrust.com"
+  - 0 issue "awstrust.com"
   spf: true
   dmarc: true
   dmarc_policy: quarantine

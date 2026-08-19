@@ -1,0 +1,30 @@
+generated: '2026-08-14'
+method: searched
+file: tl-dv-llms.txt
+source: https://tldv.io/llms.txt
+http_status: 200
+content_type: text/plain
+bytes: 346892
+lines: 6072
+fetched: '2026-08-14'
+note: >
+  tl;dv PUBLISHES its own /llms.txt at the marketing root, so the file in this
+  directory is now the provider's verbatim document, upgrading the previous
+  API-Evangelist-generated one (searched beats generated). It is saved byte-for
+  -byte and carries a UTF-8 BOM as served.
+
+  Quality finding, recorded because presence alone would overstate it: the
+  document is a WordPress-generated site index of marketing pages and blog
+  posts, with two "## Pages" and two "## Posts" sections (the list is emitted
+  twice). It contains ZERO references to doc.tldv.io, zero references to the
+  API, and zero references to API keys — grep for "doc.tldv.io" and for "api
+  key" both return 0 matches across all 6,072 lines. An agent that reads this
+  llms.txt to learn how to work with tl;dv will find blog posts comparing
+  competitors' pricing and will not learn that a REST API, an OpenAPI-shaped
+  reference, or an official MCP server exist.
+probes:
+  - {url: 'https://tldv.io/llms.txt', status: 200}
+  - {url: 'https://doc.tldv.io/llms.txt', status: 404}
+  - {url: 'https://pasta.tldv.io/llms.txt', status: 404}
+  - {url: 'https://api.tldv.io/llms.txt', status: 404}
+  - {url: 'https://mcp.tldv.io/llms.txt', status: 404}

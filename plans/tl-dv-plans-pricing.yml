@@ -1,0 +1,83 @@
+generated: '2026-08-14'
+method: probed
+source: https://tldv.io/app/pricing/
+note: >
+  Read from the schema.org SoftwareApplication/Offer JSON-LD block embedded in
+  tl;dv's own pricing page — a machine-readable price list, hence method:
+  probed rather than searched. Prices are seat-based and quoted in EUR by the
+  provider. The JSON-LD carries price and billing period only; it carries no
+  feature or quota breakdown, and the human-readable comparison table on the
+  same page is rendered client-side, so per-tier quotas are NOT recorded here
+  rather than being guessed. Third-party review sites publish USD figures and
+  feature lists that disagree with the provider's own EUR numbers; none of
+  that is used.
+  IMPORTANT: https://tldv.io/pricing/ returns 404 — the live pricing page is at
+  /app/pricing/.
+plan_count: 5
+currency: EUR
+pricing_unit: per seat
+plans:
+  - name: Free
+    billing_period: monthly
+    price: 0.00
+    currency: EUR
+    unit: seat
+    reference_quantity_months: 1
+    availability: InStock
+  - name: Pro
+    billing_period: monthly
+    price: 29.00
+    currency: EUR
+    unit: seat
+    reference_quantity_months: 1
+    availability: InStock
+  - name: Pro
+    billing_period: annual
+    price: 216.00
+    currency: EUR
+    unit: seat
+    reference_quantity_months: 12
+    effective_monthly: 18.00
+    availability: InStock
+  - name: Business
+    billing_period: monthly
+    price: 39.00
+    currency: EUR
+    unit: seat
+    reference_quantity_months: 1
+    availability: InStock
+  - name: Business
+    billing_period: annual
+    price: 348.00
+    currency: EUR
+    unit: seat
+    reference_quantity_months: 12
+    effective_monthly: 29.00
+    availability: InStock
+api_access:
+  gated: true
+  required_tier: Business or Enterprise
+  applies_to: [REST API, MCP server]
+  source: https://github.com/tldv-public/tldv-mcp-server
+  source_secondary: https://tldv.io/blog/tldv-mcp-elevating-meeting-intelligence-with-ai-driven-contextualization/
+  note: >
+    The API and the MCP server are not available on the Free or Pro tiers. Both
+    the official MCP server README ("A Business or Enterprise tl;dv account is
+    required") and the MCP launch blog post state the requirement. The pricing
+    page's JSON-LD does not encode this gate, so a machine reading only the
+    price list cannot tell that the developer surface starts at the Business
+    tier.
+enterprise:
+  listed_on_pricing_page: false
+  note: >
+    An Enterprise tier is referenced by the MCP server docs and by tl;dv sales
+    pages but does not appear as an Offer in the pricing page JSON-LD and
+    carries no published price — contact-sales only.
+x-evidence:
+  - url: https://tldv.io/app/pricing/
+    http_status: 200
+    fetched: '2026-08-14'
+    kind: schema.org JSON-LD offers
+  - url: https://tldv.io/pricing/
+    http_status: 404
+    fetched: '2026-08-14'

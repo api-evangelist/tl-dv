@@ -1,0 +1,111 @@
+generated: '2026-08-14'
+method: derived
+source: mcp/tl-dv-mcp.yml + openapi/*.yml
+note: >
+  Binds every tool registered by the official tl;dv MCP server to its backing
+  REST operation. The tool names and descriptions are read verbatim from the
+  first-party server source (src/index.ts on
+  github.com/tldv-public/tldv-mcp-server); the REST operations are verified
+  present in this repo's OpenAPI files. Confidence is `high` throughout because
+  each tool handler in src/index.ts calls a named TldvApi method that maps
+  1:1 onto a documented path — this is a read-from-source mapping, not a
+  name-similarity guess. The live tools/list on https://mcp.tldv.io/mcp is
+  OAuth-gated (HTTP 401), so the runtime inputSchema could not be introspected
+  anonymously; the input contract recorded per row is the backing operation's
+  parameters, which is the real contract the handler forwards to.
+surfaces:
+  openapi:
+    files:
+      - openapi/tl-dv-meetings-api-openapi.yml
+      - openapi/tl-dv-notes-api-openapi.yml
+      - openapi/tl-dv-transcripts-api-openapi.yml
+      - openapi/tl-dv-system-api-openapi.yml
+    base_url: https://pasta.tldv.io
+    gated: false
+    note: >
+      No provider-published OpenAPI exists; these are API Evangelist
+      reconstructions of the doc.tldv.io reference. tl;dv directs integrators
+      to dev@tldv.io for a spec.
+  mcp:
+    remote_endpoint: https://mcp.tldv.io/mcp
+    stdio_repository: https://github.com/tldv-public/tldv-mcp-server
+    gated: true
+    gated_reason: >
+      POST tools/list returns 401 invalid_token with an RFC 9728
+      WWW-Authenticate challenge; introspection requires an OAuth bearer token
+      with scope mcp:tools.
+  graphql:
+    present: false
+crosswalk:
+  - tool: list-meetings
+    category: meetings
+    rest:
+      - getMeetings
+    binding: rest
+    confidence: high
+    input_contract: openapi/tl-dv-meetings-api-openapi.yml#getMeetings (page, limit, meetingType)
+    note: >
+      Handler calls tldvApi.getMeetings(input) with GetMeetingsParamsSchema.
+      The tool description advertises filtering by "date, status, and more";
+      the documented REST surface exposes only page, limit and meetingType, so
+      the MCP filter surface may be wider than the published reference.
+  - tool: get-meeting-metadata
+    category: meetings
+    rest:
+      - getMeeting
+    binding: rest
+    confidence: high
+    input_contract: openapi/tl-dv-meetings-api-openapi.yml#getMeeting (meetingId path param)
+    note: Tool parameter is named `id`; the REST path parameter is `meetingId`.
+  - tool: get-transcript
+    category: transcripts
+    rest:
+      - getTranscript
+    binding: rest
+    confidence: high
+    input_contract: openapi/tl-dv-transcripts-api-openapi.yml#getTranscript (meetingId path param)
+  - tool: get-highlights
+    category: notes
+    rest:
+      - getHighlights
+    binding: rest
+    confidence: high
+    input_contract: openapi/tl-dv-notes-api-openapi.yml#getHighlights (meetingId path param)
+    note: >
+      DIVERGENCE — the backing REST operation is marked deprecated in the tl;dv
+      API reference, but the official MCP server still registers it as a tool
+      and the launch blog post markets it as a headline capability. An agent
+      following the MCP surface is steered at a deprecated endpoint.
+mcp_only: []
+rest_only:
+  - operation: importMeeting
+    file: openapi/tl-dv-meetings-api-openapi.yml
+    capability: meetings
+    reason: >
+      The only write operation in the API. The MCP server README lists "Import
+      Meeting (Coming Soon)" but no tool is registered in src/index.ts, so the
+      MCP surface is currently READ-ONLY while REST is read-write.
+  - operation: getNotes
+    file: openapi/tl-dv-notes-api-openapi.yml
+    capability: notes
+    reason: >
+      AI-generated meeting notes have no MCP tool. The server exposes
+      get-highlights (deprecated) instead, so the supported notes surface is
+      reachable only over REST.
+  - operation: downloadRecording
+    file: openapi/tl-dv-meetings-api-openapi.yml
+    capability: meetings
+    reason: >
+      Returns a 302 redirect to a signed recording URL; no MCP tool exposes
+      recording download.
+  - operation: getHealth
+    file: openapi/tl-dv-system-api-openapi.yml
+    capability: system
+    reason: Service health probe; not an agent-facing capability.
+coverage:
+  tools_named: 4
+  tools_bound: 4
+  mcp_only: 0
+  rest_operations_total: 8
+  rest_operations_with_tool: 4
+  mcp_surface_is_read_only: true

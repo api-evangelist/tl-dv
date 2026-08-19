@@ -1,0 +1,64 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "tl;dv Meetings Notes API",
+    "version": "v1alpha1"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Notes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve meeting notes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pasta.tldv.io/v1alpha1/meetings/:meetingId/notes",
+            "params": [
+              {
+                "name": "meetingId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the meeting."
+              }
+            ]
+          },
+          "docs": "Retrieve the AI-generated notes for a meeting."
+        },
+        {
+          "info": {
+            "name": "Retrieve meeting highlights",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pasta.tldv.io/v1alpha1/meetings/:meetingId/highlights",
+            "params": [
+              {
+                "name": "meetingId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the meeting."
+              }
+            ]
+          },
+          "docs": "Retrieve highlights for a meeting."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

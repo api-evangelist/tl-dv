@@ -1,12 +1,18 @@
-generated: '2026-07-21'
+generated: '2026-08-14'
 method: searched
 source: https://doc.tldv.io
 docs: https://doc.tldv.io
 summary:
-  types: [apiKey]
+  types: [apiKey, oauth2]
   api_key_in: [header]
   api_key_names: [x-api-key]
-  oauth2_flows: []
+  oauth2_flows: [authorizationCode]
+  note: >
+    Two DIFFERENT auth models on two different surfaces. The REST API is
+    api-key only. The hosted MCP endpoint added on 2026-08-14 is OAuth 2.1
+    against a Keycloak realm. They are not interchangeable: an x-api-key will
+    not authenticate mcp.tldv.io, and an OAuth token will not authenticate
+    pasta.tldv.io.
 schemes:
   - name: ApiKeyAuth
     type: apiKey
@@ -18,7 +24,36 @@ schemes:
       user, team, or organization context.
     key_management_url: https://tldv.io/app/settings/personal-settings/api-keys
     sources: [openapi/tl-dv-openapi.yml]
+    surface: rest
+    plan_requirement: Business or Enterprise tl;dv account
+    plan_requirement_source: https://github.com/tldv-public/tldv-mcp-server
+  - name: MCPOAuth
+    type: oauth2
+    surface: mcp
+    method: probed
+    description: >
+      The hosted MCP endpoint https://mcp.tldv.io/mcp is protected by OAuth 2.1
+      with PKCE (S256) against a Keycloak realm, advertised via RFC 9728
+      protected-resource metadata and RFC 8414 authorization-server metadata.
+      Discovered by probe on 2026-08-14; not documented by tl;dv anywhere.
+      Dynamic client registration is open. A single coarse scope, mcp:tools,
+      grants every tool.
+    issuer: https://keycloak.tldv.io/realms/mcp.tldv.io
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://keycloak.tldv.io/realms/mcp.tldv.io/protocol/openid-connect/auth
+        tokenUrl: https://keycloak.tldv.io/realms/mcp.tldv.io/protocol/openid-connect/token
+        scopes: [mcp:tools]
+    pkce: S256
+    dynamic_client_registration: https://keycloak.tldv.io/realms/mcp.tldv.io/clients-registrations/openid-connect
+    sources:
+      - well-known/tl-dv-oauth-protected-resource.json
+      - well-known/tl-dv-oauth-authorization-server.json
+    see: scopes/tl-dv-scopes.yml
 notes: >
-  tl;dv uses a single API-key model (no OAuth2/OIDC scope surface), so a scopes/
-  artifact is intentionally omitted. Health check (GET /v1alpha1/health) is the
-  only unauthenticated operation.
+  The REST API uses a single API-key model with no scope surface. An OAuth2
+  scope surface DOES exist, but only on the hosted MCP endpoint, so
+  scopes/tl-dv-scopes.yml is scoped to that surface. Health check (GET
+  /v1alpha1/health) is the only unauthenticated REST operation; it was probed
+  anonymously on 2026-08-14 and returned 200 {"status":"ok"}. API access
+  requires a Business or Enterprise account regardless of surface.

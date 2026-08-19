@@ -1,30 +1,143 @@
-generated: '2026-07-21'
-method: derived
-status: candidate
-source: openapi/tl-dv-openapi.yml
+generated: '2026-08-14'
+method: searched
+status: published
+source: https://github.com/tldv-public/tldv-mcp-server
 note: >
-  No official tl;dv MCP server was found. This is a candidate tool list derived
-  one-to-one from the documented API operations, for use in building an MCP
-  wrapper. Not an endorsed or hosted server.
+  tl;dv ships an OFFICIAL MCP server. The prior round of this pipeline recorded
+  "no official MCP server found" and derived a candidate tool list from the
+  OpenAPI; that was wrong. Two distinct surfaces were confirmed on 2026-08-14:
+
+  (1) a first-party open-source stdio server, published by tl;dv at
+  gitlab.com/tldv/tldv-mcp-server and mirrored to github.com/tldv-public/
+  tldv-mcp-server, whose README is titled "Official MCP Server for tl;dv API"
+  and which is announced on the tl;dv blog (2025-04-11). It is NOT published to
+  npm by tl;dv — it is run by building the repo (Docker image or `npm run
+  build` + node), so an operator must clone and build before any agent can use
+  it.
+
+  (2) a live HOSTED remote endpoint at https://mcp.tldv.io/mcp, confirmed by
+  probe: POST tools/list returns HTTP 401 with an RFC 9728 WWW-Authenticate
+  Bearer challenge naming resource_metadata
+  https://mcp.tldv.io/.well-known/oauth-protected-resource. Both OAuth
+  discovery documents resolve 200 and are saved verbatim under well-known/.
+  The remote endpoint is NOT referenced in the docs or the launch blog post,
+  and its own protected-resource metadata self-describes as "MCP Demo Server",
+  so it is recorded as live-but-undocumented rather than as a supported
+  product surface.
 server:
-  name: tl-dv
+  name: tldv-server
+  version: 1.0.0
+  transport: stdio
+  instructions: You are a helpful assistant that can help with TLDV API requests.
+  source_repository: https://gitlab.com/tldv/tldv-mcp-server
+  mirror_repository: https://github.com/tldv-public/tldv-mcp-server
+  sdk: '@modelcontextprotocol/sdk ^1.8.0'
+  backing_api: https://pasta.tldv.io/v1alpha1
+deployment:
+  mode: both
+  endpoint: https://mcp.tldv.io/mcp
+  install: docker build -t tldv-mcp-server . && docker run -i --init --rm -e TLDV_API_KEY=<your-tldv-api-key> tldv-mcp-server
+  package: https://github.com/tldv-public/tldv-mcp-server
+  auth: oauth
+  verified: probed
+  checked: '2026-08-14'
+  note: >
+    mode is `both` because the two surfaces are genuinely different products.
+    The stdio server authenticates with a tl;dv API key on the TLDV_API_KEY
+    environment variable and must be built from source first — there is no
+    `npx` one-liner, because tl;dv publishes no npm package. The remote
+    endpoint authenticates with OAuth 2.1 against a Keycloak realm and is
+    callable by an MCP client today with no local install.
+remote:
+  endpoint: https://mcp.tldv.io/mcp
   transport: http
+  probe:
+    method: POST tools/list
+    http_status: 401
+    www_authenticate: >-
+      Bearer error="invalid_token", error_description="Missing Authorization
+      header", resource_metadata="https://mcp.tldv.io/.well-known/oauth-protected-resource"
+    body: '{"error":"invalid_token","error_description":"Missing Authorization header"}'
+    checked: '2026-08-14'
+  gated: true
+  gated_note: >
+    tools/list requires a bearer token, so the live tool set with real
+    inputSchema could not be introspected anonymously. The tools[] below are
+    read from the first-party server SOURCE (src/index.ts), not guessed.
+  authorization:
+    resource: https://mcp.tldv.io/
+    resource_name: MCP Demo Server
+    authorization_servers:
+      - https://keycloak.tldv.io/realms/mcp.tldv.io
+    scopes_supported:
+      - mcp:tools
+    protected_resource_metadata: well-known/tl-dv-oauth-protected-resource.json
+    authorization_server_metadata: well-known/tl-dv-oauth-authorization-server.json
+    see: scopes/tl-dv-scopes.yml
+access:
+  plan_requirement: Business or Enterprise tl;dv account
+  api_key_url: https://tldv.io/app/settings/personal-settings/api-keys
+  source: https://github.com/tldv-public/tldv-mcp-server
 tools:
-  - name: list_meetings
-    description: List meetings for the account, with pagination and meetingType filter.
-    source_operation: openapi/tl-dv-openapi.yml#getMeetings
-  - name: import_meeting
-    description: Import a meeting recording from a URL for processing.
-    source_operation: openapi/tl-dv-openapi.yml#importMeeting
-  - name: get_meeting
-    description: Retrieve a single meeting by id.
-    source_operation: openapi/tl-dv-openapi.yml#getMeeting
-  - name: get_transcript
-    description: Retrieve the transcript for a meeting.
-    source_operation: openapi/tl-dv-openapi.yml#getTranscript
-  - name: get_notes
-    description: Retrieve the AI-generated notes for a meeting.
-    source_operation: openapi/tl-dv-openapi.yml#getNotes
-  - name: download_recording
-    description: Get the signed download URL for a meeting recording.
-    source_operation: openapi/tl-dv-openapi.yml#downloadRecording
+  - name: list-meetings
+    description: >-
+      List all meetings based on the filters provided. You can filter by date,
+      status, and more. Those meetings are the sames you have access to in the
+      TLDV app.
+    input_schema: GetMeetingsParamsSchema
+    source_operation: openapi/tl-dv-meetings-api-openapi.yml#getMeetings
+    source: https://github.com/tldv-public/tldv-mcp-server/blob/main/src/index.ts
+  - name: get-meeting-metadata
+    description: >-
+      Get a meeting by its ID. The meeting ID is a unique identifier for a
+      meeting. It will return the meeting metadata, including the name, the
+      date, the organizer, participants and more.
+    input_schema: '{ id: string }'
+    source_operation: openapi/tl-dv-meetings-api-openapi.yml#getMeeting
+    source: https://github.com/tldv-public/tldv-mcp-server/blob/main/src/index.ts
+  - name: get-transcript
+    description: >-
+      Get transcript by meeting ID. The transcript is a list of messages
+      exchanged between the participants in the meeting. It's time-stamped and
+      contains the speaker and the message
+    input_schema: '{ meetingId: string }'
+    source_operation: openapi/tl-dv-transcripts-api-openapi.yml#getTranscript
+    source: https://github.com/tldv-public/tldv-mcp-server/blob/main/src/index.ts
+  - name: get-highlights
+    description: Allows you to get highlights from a meeting by providing a meeting ID.
+    input_schema: '{ meetingId: string }'
+    source_operation: openapi/tl-dv-notes-api-openapi.yml#getHighlights
+    source: https://github.com/tldv-public/tldv-mcp-server/blob/main/src/index.ts
+    note: >
+      Backing REST operation getHighlights is marked DEPRECATED in the tl;dv API
+      reference, yet the official MCP server still exposes it as a tool. See
+      lifecycle/tl-dv-lifecycle.yml.
+roadmap:
+  - name: import-meeting
+    status: coming-soon
+    source: https://github.com/tldv-public/tldv-mcp-server
+    note: >
+      README lists "Import Meeting (Coming Soon)". The REST operation
+      importMeeting exists and is documented; no MCP tool is registered for it
+      in src/index.ts as of the 2025-12-12 commit.
+x-evidence:
+  - url: https://mcp.tldv.io/mcp
+    method: POST
+    http_status: 401
+    fetched: '2026-08-14'
+  - url: https://mcp.tldv.io/.well-known/oauth-protected-resource
+    http_status: 200
+    fetched: '2026-08-14'
+  - url: https://mcp.tldv.io/.well-known/oauth-authorization-server
+    http_status: 200
+    fetched: '2026-08-14'
+  - url: https://github.com/tldv-public/tldv-mcp-server
+    http_status: 200
+    fetched: '2026-08-14'
+  - url: https://gitlab.com/tldv/tldv-mcp-server
+    http_status: 200
+    fetched: '2026-08-14'
+  - url: https://tldv.io/blog/tldv-mcp-elevating-meeting-intelligence-with-ai-driven-contextualization/
+    http_status: 200
+    published: '2025-04-11'
+    fetched: '2026-08-14'

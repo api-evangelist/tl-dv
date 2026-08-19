@@ -1,0 +1,101 @@
+generated: '2026-08-14'
+method: searched
+source: >-
+  registry.npmjs.org, pypi.org, api.github.com/orgs/tldv-public,
+  https://doc.tldv.io, https://github.com/tldv-public/tldv-mcp-server
+note: >
+  tl;dv publishes NO first-party client SDK in any package registry. npm, PyPI,
+  RubyGems, crates.io, Packagist, NuGet, Maven Central and pkg.go.dev were all
+  searched on 2026-08-14 and none carries a tl;dv-authored library. The API
+  reference at doc.tldv.io documents raw HTTP with an x-api-key header and links
+  no SDK. The single piece of first-party distributable code tl;dv ships is the
+  MCP server, and it is distributed as SOURCE ONLY — the GitHub org tldv-public
+  contains exactly one repository and it has never been published to npm, so a
+  consumer must clone and build (Docker or `npm run build`) rather than install.
+  Several npm packages with tl;dv-shaped names exist; every one of them is
+  third-party and is recorded below as official: false so the catalog does not
+  credit tl;dv with SDKs it did not ship.
+official_package_count: 0
+packages:
+  - language: typescript
+    registry: source
+    name: tldv-mcp-server
+    url: https://github.com/tldv-public/tldv-mcp-server
+    mirror_url: https://gitlab.com/tldv/tldv-mcp-server
+    install: git clone https://github.com/tldv-public/tldv-mcp-server && npm install && npm run build
+    official: true
+    kind: mcp-server
+    version: null
+    published: null
+    note: >
+      FIRST-PARTY but UNRELEASED. README is titled "Official MCP Server for
+      tl;dv API" and the tl;dv blog announced it on 2025-04-11. There is no
+      registry metadata endpoint to query because tl;dv never published it:
+      package.json declares name "tldv-mcp" version "1.0.0", but the npm
+      package by that name is owned by an unaffiliated maintainer (see below).
+      version/published are null because the provider ships no tagged release
+      — the only currency signal available is the repository's last commit,
+      2025-12-12, which is 8 months stale as of this pass.
+    last_commit: '2025-12-12'
+    repository_created: '2025-04-15'
+    stars: 13
+    default_branch: main
+  - language: javascript
+    registry: npm
+    name: tldv-mcp
+    url: https://www.npmjs.com/package/tldv-mcp
+    install: npm install tldv-mcp
+    official: false
+    kind: mcp-server
+    version: 1.0.2
+    published: '2025-08-20'
+    note: >
+      THIRD-PARTY republish of the tl;dv MCP server source. Description reads
+      "MCP Server for tl;dv API" and it matches the name field in the official
+      repo's package.json, but the sole npm maintainer is luke3butler
+      (opensource@lukebutler.com), the package declares no repository, no
+      homepage and no license, and it is not referenced from any tl;dv
+      property. Recorded for provenance so it is not mistaken for a tl;dv
+      release; do not treat as an official SDK.
+  - language: javascript
+    registry: npm
+    name: '@iflow-mcp/tldv-mcp-server'
+    url: https://www.npmjs.com/package/@iflow-mcp/tldv-mcp-server
+    install: npm install @iflow-mcp/tldv-mcp-server
+    official: false
+    kind: mcp-server
+    version: 1.0.0
+    published: '2025-12-09'
+    note: Third-party mirror published under the iflow-mcp aggregator scope.
+  - language: javascript
+    registry: npm
+    name: '@numbnp/tldv-mcp'
+    url: https://www.npmjs.com/package/@numbnp/tldv-mcp
+    install: npm install @numbnp/tldv-mcp
+    official: false
+    kind: mcp-server
+    version: 1.0.0
+    published: '2026-04-07'
+    note: Third-party scoped republish.
+  - language: javascript
+    registry: npm
+    name: tldv-cli
+    url: https://www.npmjs.com/package/tldv-cli
+    install: npm install -g tldv-cli
+    official: false
+    kind: cli
+    version: 0.1.0
+    published: '2026-08-10'
+    repository: https://github.com/BogdanSerban95/tldv-cli
+    note: >
+      Self-described as an "Unofficial command-line client for the tl;dv API".
+      Community-authored; tl;dv ships no first-party CLI.
+registries_searched:
+  - {registry: npm, result: no-first-party-package, checked: '2026-08-14'}
+  - {registry: pypi, result: no-package, checked: '2026-08-14'}
+  - {registry: rubygems, result: no-package, checked: '2026-08-14'}
+  - {registry: crates.io, result: no-package, checked: '2026-08-14'}
+  - {registry: packagist, result: no-package, checked: '2026-08-14'}
+  - {registry: nuget, result: no-package, checked: '2026-08-14'}
+  - {registry: maven-central, result: no-package, checked: '2026-08-14'}
+  - {registry: pkg.go.dev, result: no-package, checked: '2026-08-14'}

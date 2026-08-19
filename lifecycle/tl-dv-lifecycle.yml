@@ -1,4 +1,4 @@
-generated: '2026-07-21'
+generated: '2026-08-14'
 method: searched
 source: https://doc.tldv.io
 versioning:
@@ -15,10 +15,34 @@ deprecation:
     No formal deprecation policy or RFC 8594 Sunset/Deprecation header support is
     documented. The highlights endpoint is marked deprecated in the reference.
 deprecated_operations:
-  - openapi/tl-dv-openapi.yml#getHighlights
+  - operation: openapi/tl-dv-notes-api-openapi.yml#getHighlights
+    still_exposed_as_mcp_tool: get-highlights
+    note: >
+      DIVERGENCE — this operation is marked deprecated in the API reference, yet
+      the official tl;dv MCP server still registers it as the `get-highlights`
+      tool and the MCP launch blog post markets highlights as a headline
+      capability. With no Sunset header and no deprecation policy, an agent
+      using the sanctioned MCP surface has no way to learn it is calling a
+      deprecated endpoint. See mcp/tl-dv-tool-crosswalk.yml.
+changelog:
+  published: false
+  probes:
+    - {url: 'https://tldv.io/changelog/', status: 404}
+    - {url: 'https://tldv.io/whats-new/', status: 404}
+    - {url: 'https://doc.tldv.io/changelog', status: 404}
+  note: >
+    No dated changelog or release-notes page was found on any tl;dv host, so a
+    changelog/ artifact is intentionally omitted rather than fabricated. The
+    only dated release signal for the developer surface is the MCP server's
+    git history (repo created 2025-04-15, announced 2025-04-11, last commit
+    2025-12-12).
 status_page: null
+status_page_probes:
+  - {url: 'https://status.tldv.io', status: 000, note: host does not resolve}
+  - {url: 'https://tldv.io/status/', status: 404}
 sla:
   url: null
 support:
   contact: dev@tldv.io
   help_center: https://intercom.help/tldv/en
+checked: '2026-08-14'

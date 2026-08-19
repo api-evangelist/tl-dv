@@ -1,0 +1,69 @@
+generated: '2026-08-14'
+method: probed
+source: https://doc.tldv.io
+limit_count: 0
+note: >
+  tl;dv publishes NO rate limits. The API reference at doc.tldv.io has no rate
+  limit section, no quota table and no documented response headers, and no
+  limits appear on the pricing page. This is an honest zero, not an unchecked
+  field — and it is a real gap rather than an absence of throttling, because
+  two independent signals show the API does throttle:
+
+  (1) tl;dv's OWN official MCP server retries on HTTP 429. src/api/tldv-api.ts
+  treats `status === 429` as a retryable condition alongside 5xx and network
+  errors, backing off exponentially (1s, 2s, 4s …) up to a capped delay. A
+  provider does not write 429 handling into its first-party client unless the
+  service returns 429.
+
+  (2) The API is fronted by Cloudflare (server: cloudflare, cf-ray on every
+  response), which applies edge rate limiting independently of anything tl;dv
+  documents.
+
+  An agent therefore has no published budget to plan against and no runtime
+  signal to react to: it can only discover the limit by hitting it.
+limits: []
+response_headers:
+  observed: []
+  probe:
+    endpoints:
+      - {url: 'https://pasta.tldv.io/v1alpha1/health', http_status: 200, checked: '2026-08-14'}
+      - {url: 'https://pasta.tldv.io/v1alpha1/meetings', http_status: 401, checked: '2026-08-14'}
+    result: >
+      No X-RateLimit-*, RateLimit-* (RFC 9331 draft) or Retry-After header was
+      returned on either the unauthenticated 200 or the unauthenticated 401.
+      Response headers carry only content-type, etag, x-powered-by (Express),
+      x-robots-tag, x-tldx-trace-id, strict-transport-security and Cloudflare's
+      cf-ray / cf-cache-status.
+    note: >
+      Authenticated endpoints were not probed — this pipeline holds no tl;dv
+      API key — so it remains possible that rate limit headers are emitted only
+      on authenticated responses. Recorded as unobserved, not as absent.
+exhaustion:
+  status_code: 429
+  evidence: >-
+    Retry condition in the first-party MCP server client:
+    https://github.com/tldv-public/tldv-mcp-server/blob/main/src/api/tldv-api.ts
+  documented_by_provider: false
+  retry_after_header: unknown
+client_side_backoff:
+  implemented_in: https://github.com/tldv-public/tldv-mcp-server
+  strategy: exponential
+  formula: min(RETRY_DELAY * 2 ** retryCount, MAX_RETRY_DELAY)
+  retries_on: [429, 5xx, network-error]
+tracing:
+  header: x-tldx-trace-id
+  observed: true
+  note: >
+    Every response carries an x-tldx-trace-id. Undocumented, but it is the
+    correlation id to quote in a support request. See
+    conventions/tl-dv-conventions.yml.
+x-evidence:
+  - url: https://pasta.tldv.io/v1alpha1/health
+    http_status: 200
+    fetched: '2026-08-14'
+  - url: https://pasta.tldv.io/v1alpha1/meetings
+    http_status: 401
+    fetched: '2026-08-14'
+  - url: https://doc.tldv.io
+    http_status: 200
+    fetched: '2026-08-14'

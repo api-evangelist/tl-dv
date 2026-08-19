@@ -1,0 +1,45 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "tl;dv Meetings Transcripts API",
+    "version": "v1alpha1"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transcripts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a meeting transcript",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pasta.tldv.io/v1alpha1/meetings/:meetingId/transcript",
+            "params": [
+              {
+                "name": "meetingId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the meeting."
+              }
+            ]
+          },
+          "docs": "Retrieve the transcript for a meeting."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
