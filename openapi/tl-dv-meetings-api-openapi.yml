@@ -1,10 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: tl;dv Meetings API
   version: v1alpha1
-  description: 'Public API for tl;dv, the AI meeting notetaker for Zoom, Google Meet and Microsoft Teams. Programmatic access to recorded meetings, transcripts and AI-generated notes, plus meeting import and webhook event delivery.
-
-    '
+  description: Public API for tl;dv, the AI meeting notetaker for Zoom, Google Meet and Microsoft Teams. Programmatic access to recorded meetings, transcripts and AI-generated notes, plus meeting import and webhook event delivery.
   contact:
     name: tl;dv Developer Support
     email: dev@tldv.io
@@ -118,9 +116,7 @@ paths:
     get:
       operationId: downloadRecording
       summary: Download a meeting recording
-      description: 'Returns a 302 redirect whose Location header points at a signed URL for the meeting recording file.
-
-        '
+      description: Returns a 302 redirect whose Location header points at a signed URL for the meeting recording file.
       tags:
       - Meetings
       parameters:
@@ -141,7 +137,37 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 components:
+  parameters:
+    MeetingId:
+      name: meetingId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Unique identifier of the meeting.
   schemas:
+    Error:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
+    MeetingList:
+      type: object
+      properties:
+        page:
+          type: integer
+        pages:
+          type: integer
+        total:
+          type: integer
+        pageSize:
+          type: integer
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Meeting'
     ImportMeetingRequest:
       type: object
       properties:
@@ -154,6 +180,39 @@ components:
         happenedAt:
           type: string
           format: date-time
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              property:
+                type: string
+              constraints:
+                type: object
+                additionalProperties:
+                  type: string
+    Person:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+    ImportMeetingResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        jobId:
+          type: string
+        message:
+          type: string
     Meeting:
       type: object
       properties:
@@ -183,70 +242,21 @@ components:
           properties:
             conferenceId:
               type: string
-    MeetingList:
-      type: object
-      properties:
-        page:
-          type: integer
-        pages:
-          type: integer
-        total:
-          type: integer
-        pageSize:
-          type: integer
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Meeting'
-    Person:
-      type: object
-      properties:
-        name:
-          type: string
-        email:
-          type: string
-          format: email
-    ValidationError:
-      type: object
-      properties:
-        message:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              property:
-                type: string
-              constraints:
-                type: object
-                additionalProperties:
-                  type: string
-    ImportMeetingResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        jobId:
-          type: string
-        message:
-          type: string
-    Error:
-      type: object
-      properties:
-        name:
-          type: string
-        message:
-          type: string
   responses:
-    Forbidden:
-      description: The API key is not permitted to access this resource.
+    BadRequest:
+      description: Validation error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+    Unauthorized:
+      description: Missing or invalid API key.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid API key.
+    Forbidden:
+      description: The API key is not permitted to access this resource.
       content:
         application/json:
           schema:
@@ -257,26 +267,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Validation error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
     NotFound:
       description: The requested resource was not found.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  parameters:
-    MeetingId:
-      name: meetingId
-      in: path
-      required: true
-      schema:
-        type: string
-      description: Unique identifier of the meeting.
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

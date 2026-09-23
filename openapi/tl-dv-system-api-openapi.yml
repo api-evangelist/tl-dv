@@ -1,10 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: tl;dv Meetings System API
+  title: tl;dv System API
   version: v1alpha1
-  description: 'Public API for tl;dv, the AI meeting notetaker for Zoom, Google Meet and Microsoft Teams. Programmatic access to recorded meetings, transcripts and AI-generated notes, plus meeting import and webhook event delivery.
-
-    '
+  description: Public API for tl;dv, the AI meeting notetaker for Zoom, Google Meet and Microsoft Teams. Programmatic access to recorded meetings, transcripts and AI-generated notes, plus meeting import and webhook event delivery.
   contact:
     name: tl;dv Developer Support
     email: dev@tldv.io

@@ -1,10 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: tl;dv Meetings Transcripts API
+  title: tl;dv Transcripts API
   version: v1alpha1
-  description: 'Public API for tl;dv, the AI meeting notetaker for Zoom, Google Meet and Microsoft Teams. Programmatic access to recorded meetings, transcripts and AI-generated notes, plus meeting import and webhook event delivery.
-
-    '
+  description: Public API for tl;dv, the AI meeting notetaker for Zoom, Google Meet and Microsoft Teams. Programmatic access to recorded meetings, transcripts and AI-generated notes, plus meeting import and webhook event delivery.
   contact:
     name: tl;dv Developer Support
     email: dev@tldv.io
@@ -44,31 +42,6 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    Forbidden:
-      description: The API key is not permitted to access this resource.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
     MeetingId:
       name: meetingId
@@ -78,6 +51,13 @@ components:
         type: string
       description: Unique identifier of the meeting.
   schemas:
+    Error:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
     Transcript:
       type: object
       properties:
@@ -98,13 +78,31 @@ components:
                 type: number
               endTime:
                 type: number
-    Error:
-      type: object
-      properties:
-        name:
-          type: string
-        message:
-          type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: The API key is not permitted to access this resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
