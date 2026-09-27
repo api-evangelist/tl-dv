@@ -42,6 +42,31 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 components:
+  responses:
+    Forbidden:
+      description: The API key is not permitted to access this resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     MeetingId:
       name: meetingId
@@ -51,13 +76,6 @@ components:
         type: string
       description: Unique identifier of the meeting.
   schemas:
-    Error:
-      type: object
-      properties:
-        name:
-          type: string
-        message:
-          type: string
     Transcript:
       type: object
       properties:
@@ -78,31 +96,13 @@ components:
                 type: number
               endTime:
                 type: number
-  responses:
-    Unauthorized:
-      description: Missing or invalid API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: The API key is not permitted to access this resource.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

@@ -137,22 +137,7 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 components:
-  parameters:
-    MeetingId:
-      name: meetingId
-      in: path
-      required: true
-      schema:
-        type: string
-      description: Unique identifier of the meeting.
   schemas:
-    Error:
-      type: object
-      properties:
-        name:
-          type: string
-        message:
-          type: string
     MeetingList:
       type: object
       properties:
@@ -168,42 +153,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Meeting'
-    ImportMeetingRequest:
-      type: object
-      properties:
-        url:
-          type: string
-          format: uri
-          description: URL of the recording to import.
-        name:
-          type: string
-        happenedAt:
-          type: string
-          format: date-time
-    ValidationError:
-      type: object
-      properties:
-        message:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              property:
-                type: string
-              constraints:
-                type: object
-                additionalProperties:
-                  type: string
-    Person:
-      type: object
-      properties:
-        name:
-          type: string
-        email:
-          type: string
-          format: email
     ImportMeetingResponse:
       type: object
       properties:
@@ -213,6 +162,14 @@ components:
           type: string
         message:
           type: string
+    Person:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
     Meeting:
       type: object
       properties:
@@ -242,21 +199,62 @@ components:
           properties:
             conferenceId:
               type: string
+    ImportMeetingRequest:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: URL of the recording to import.
+        name:
+          type: string
+        happenedAt:
+          type: string
+          format: date-time
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              property:
+                type: string
+              constraints:
+                type: object
+                additionalProperties:
+                  type: string
+    Error:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
   responses:
-    BadRequest:
-      description: Validation error.
+    Forbidden:
+      description: The API key is not permitted to access this resource.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/Error'
     Unauthorized:
       description: Missing or invalid API key.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: The API key is not permitted to access this resource.
+    BadRequest:
+      description: Validation error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+    NotFound:
+      description: The requested resource was not found.
       content:
         application/json:
           schema:
@@ -267,12 +265,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+  parameters:
+    MeetingId:
+      name: meetingId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Unique identifier of the meeting.
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
