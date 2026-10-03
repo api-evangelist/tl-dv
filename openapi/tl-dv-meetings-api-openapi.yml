@@ -138,21 +138,22 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    MeetingList:
+    ValidationError:
       type: object
       properties:
-        page:
-          type: integer
-        pages:
-          type: integer
-        total:
-          type: integer
-        pageSize:
-          type: integer
-        results:
+        message:
+          type: string
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/Meeting'
+            type: object
+            properties:
+              property:
+                type: string
+              constraints:
+                type: object
+                additionalProperties:
+                  type: string
     ImportMeetingResponse:
       type: object
       properties:
@@ -162,14 +163,25 @@ components:
           type: string
         message:
           type: string
-    Person:
+    ImportMeetingRequest:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: URL of the recording to import.
+        name:
+          type: string
+        happenedAt:
+          type: string
+          format: date-time
+    Error:
       type: object
       properties:
         name:
           type: string
-        email:
+        message:
           type: string
-          format: email
     Meeting:
       type: object
       properties:
@@ -199,42 +211,44 @@ components:
           properties:
             conferenceId:
               type: string
-    ImportMeetingRequest:
+    MeetingList:
       type: object
       properties:
-        url:
-          type: string
-          format: uri
-          description: URL of the recording to import.
-        name:
-          type: string
-        happenedAt:
-          type: string
-          format: date-time
-    ValidationError:
-      type: object
-      properties:
-        message:
-          type: string
-        errors:
+        page:
+          type: integer
+        pages:
+          type: integer
+        total:
+          type: integer
+        pageSize:
+          type: integer
+        results:
           type: array
           items:
-            type: object
-            properties:
-              property:
-                type: string
-              constraints:
-                type: object
-                additionalProperties:
-                  type: string
-    Error:
+            $ref: '#/components/schemas/Meeting'
+    Person:
       type: object
       properties:
         name:
           type: string
-        message:
+        email:
           type: string
+          format: email
+  parameters:
+    MeetingId:
+      name: meetingId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Unique identifier of the meeting.
   responses:
+    ServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     Forbidden:
       description: The API key is not permitted to access this resource.
       content:
@@ -247,32 +261,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Validation error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
     NotFound:
       description: The requested resource was not found.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal server error.
+    BadRequest:
+      description: Validation error.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    MeetingId:
-      name: meetingId
-      in: path
-      required: true
-      schema:
-        type: string
-      description: Unique identifier of the meeting.
+            $ref: '#/components/schemas/ValidationError'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
