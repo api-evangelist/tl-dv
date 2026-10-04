@@ -42,35 +42,27 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 components:
-  parameters:
-    MeetingId:
-      name: meetingId
-      in: path
-      required: true
-      schema:
-        type: string
-      description: Unique identifier of the meeting.
   responses:
-    ServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: The API key is not permitted to access this resource.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     Unauthorized:
       description: Missing or invalid API key.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     NotFound:
       description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: The API key is not permitted to access this resource.
       content:
         application/json:
           schema:
@@ -103,6 +95,14 @@ components:
                 type: number
               endTime:
                 type: number
+  parameters:
+    MeetingId:
+      name: meetingId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Unique identifier of the meeting.
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
