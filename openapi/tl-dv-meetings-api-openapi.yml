@@ -138,15 +138,57 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    ImportMeetingResponse:
+    MeetingList:
       type: object
       properties:
-        success:
-          type: boolean
-        jobId:
-          type: string
+        page:
+          type: integer
+        pages:
+          type: integer
+        total:
+          type: integer
+        pageSize:
+          type: integer
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Meeting'
+    ValidationError:
+      type: object
+      properties:
         message:
           type: string
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              property:
+                type: string
+              constraints:
+                type: object
+                additionalProperties:
+                  type: string
+    Person:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+    ImportMeetingRequest:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: URL of the recording to import.
+        name:
+          type: string
+        happenedAt:
+          type: string
+          format: date-time
     Meeting:
       type: object
       properties:
@@ -176,45 +218,15 @@ components:
           properties:
             conferenceId:
               type: string
-    MeetingList:
+    ImportMeetingResponse:
       type: object
       properties:
-        page:
-          type: integer
-        pages:
-          type: integer
-        total:
-          type: integer
-        pageSize:
-          type: integer
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Meeting'
-    Person:
-      type: object
-      properties:
-        name:
+        success:
+          type: boolean
+        jobId:
           type: string
-        email:
-          type: string
-          format: email
-    ValidationError:
-      type: object
-      properties:
         message:
           type: string
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              property:
-                type: string
-              constraints:
-                type: object
-                additionalProperties:
-                  type: string
     Error:
       type: object
       properties:
@@ -222,25 +234,7 @@ components:
           type: string
         message:
           type: string
-    ImportMeetingRequest:
-      type: object
-      properties:
-        url:
-          type: string
-          format: uri
-          description: URL of the recording to import.
-        name:
-          type: string
-        happenedAt:
-          type: string
-          format: date-time
   responses:
-    Unauthorized:
-      description: Missing or invalid API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     BadRequest:
       description: Validation error.
       content:
@@ -249,6 +243,12 @@ components:
             $ref: '#/components/schemas/ValidationError'
     ServerError:
       description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid API key.
       content:
         application/json:
           schema:
